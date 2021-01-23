@@ -35,6 +35,9 @@ export class Client implements ClientInterface {
 		this.rooms = rooms
 		
 	}
+	/*
+	 * Connect the client to the WebSocket server
+	 */
 	public connect(): Promise<void> {
 		return new Promise(async (resolve, reject) => {
 			const ports_inc = 0
@@ -69,7 +72,6 @@ export class Client implements ClientInterface {
 						break;
 				}
 				
-				
 			})
 			
 			this.websocket.on('open', () => {
@@ -80,9 +82,11 @@ export class Client implements ClientInterface {
 				resolve()
 			})
 			
-			
 		})
 	}
+	/*
+	 *  Send message into a room
+	 */
 	public sendMessage(message: string, options: SendMessageOptions): Promise<MessageSentResult> {
 		return new Promise(async (resolve, reject) => {
 			const { cid, timestamp } = await this.ipfsNode.add(JSON.stringify({

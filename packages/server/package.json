@@ -9,6 +9,7 @@
 		"start": "webpack-cli && node dist/main.js"
 	},
 	"devDependencies": {
+		"@types/ws": "^7.4.0",
 		"nodemon-webpack-plugin": "^4.4.4",
 		"ts-loader": "^8.0.14",
 		"typescript": "^4.1.3",
