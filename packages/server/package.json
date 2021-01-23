@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "webpack-cli",
 		"dev": "webpack-cli --watch",
-		"start": "node dist/main.js"
+		"start": "webpack-cli && node dist/main.js"
 	},
 	"devDependencies": {
 		"nodemon-webpack-plugin": "^4.4.4",
