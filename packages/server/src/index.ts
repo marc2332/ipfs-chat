@@ -4,6 +4,8 @@ import expressWS from 'express-ws'
 
 const app = express()
 
+const port = process.env.PORT || 4000
+
 expressWS(app)
 
 app.use(morgan('dev'))
@@ -33,6 +35,7 @@ app.ws('/bridge', (socket) => {
 				
 			case 'message':
 				activeRooms[data.room].sockets.forEach(socket => {
+					console.log(data.cid)
 					socket.send(JSON.stringify({
 						room: data.room,
 						type: 'message',
@@ -43,9 +46,20 @@ app.ws('/bridge', (socket) => {
 				break;
 		}
 	})
+	
+	socket.on('close', () => {
+		Object.keys(activeRooms).forEach((roomName, i) => {
+			const room = activeRooms[roomName]
+			room.sockets.forEach(ws => {
+				if(ws == socket){
+					room.sockets.splice(i, 1)
+				}
+			})
+		})
+	})
 })
 
-app.listen(4000,{
+app.listen(port,{
 	host: '0.0.0.0'
 } , () => {
 	console.log('listening on port 4000')
