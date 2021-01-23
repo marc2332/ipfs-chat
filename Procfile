@@ -1,1 +1,1 @@
-web: yarn workspace client start
+web: yarn workspace server start

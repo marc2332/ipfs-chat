@@ -1,7 +1,7 @@
 const { Client } = require('../dist/main')
 
 const instance = new Client({
-	server: 'ws://localhost:4000',
+	server: 'https://ipfs-chat-test.herokuapp.com',
 	username: 'publicname',
 	userkey: '1234',
 	rooms: [
