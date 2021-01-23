@@ -1,24 +1,27 @@
 const { Client } = require('../dist/main')
 
 const instance = new Client({
-	server: 'https://ipfs-chat-test.herokuapp.com',
-	username: 'publicname',
+	server: 'ws://localhost:4000',
+	username: `SomeUser`,
 	userkey: '1234',
 	rooms: [
-		'Testingroom'
+		'ExperimentalRoom'
 	]
 })
 
 instance.connect().then(() => {
+	
+	console.log('Client connected!')
+	
 	instance.events.on('message',({ room, username, message }) => {
-		console.log(`${username} (${room}) -> ${message}`)
+		console.log(`${username}@${room}: ${message}`)
 	})
 	
 	setInterval(() => {
 		instance.sendMessage(`Hello World!${Math.random()}`,{
-			room: 'Testingroom'
+			room: 'ExperimentalRoom'
 		})
-	}, 5000)
+	}, 2500)
 	
 })
 

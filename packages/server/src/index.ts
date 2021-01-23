@@ -20,7 +20,6 @@ class Connection {
 		
 		this.socket.on('message', (incomingMessage: string) => {
 			const messageObject = JSON.parse(incomingMessage)
-			
 			switch(messageObject.type){
 				/*
 				 * Listen for messages in a specific room
