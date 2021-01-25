@@ -6,11 +6,16 @@ interface ClientInterface {
 	sendMessage: (message: string, options: SendMessageOptions) => Promise<MessageSentResult>
 }
 
+interface DatabaseInterface {
+	logMessage: (message: string) => void
+}
+
 interface ClientOptions {
-	server: string,
-	username: string,
+	server: string
+	username: string
 	userkey: string
 	rooms: string[]
+	database: DatabaseInterface
 }
 
 type MessageSentResult = void
@@ -28,30 +33,35 @@ export class Client implements ClientInterface {
 	private server: string;
 	private userkey: string;
 	private rooms: string[];
-	constructor({ server, username, userkey, rooms }: ClientOptions){
+	private database: DatabaseInterface;
+	constructor({ server, username, userkey, rooms, database }: ClientOptions){
 		this.server = server
 		this.username = username
 		this.userkey = userkey
 		this.rooms = rooms
+		this.database = database
+		
+		this.events.on('message', (message) => {
+			this.database.logMessage(message)
+		})
 		
 	}
 	/*
 	 * Connect the client to the WebSocket server
 	 */
-	public connect(): Promise<void> {
+	public connect(portsIncrement = 0): Promise<void> {
 		return new Promise(async (resolve, reject) => {
-			const ports_inc = 0
 
 			this.ipfsNode = await IPFS.create({
 				repo: `cache/${this.username}`,
 				//@ts-ignore
 				config:{
 					"Addresses": {
-						"API": `/ip4/127.0.0.1/tcp/${5002+ports_inc}`,
-						"Gateway": `/ip4/127.0.0.1/tcp/${8081+ports_inc}`,
+						"API": `/ip4/127.0.0.1/tcp/${5002+portsIncrement}`,
+						"Gateway": `/ip4/127.0.0.1/tcp/${8081+portsIncrement}`,
 						"Swarm": [
-							`/ip4/0.0.0.0/tcp/${4002+ports_inc}`,
-							`/ip6/::/tcp/${4002+ports_inc}`
+							`/ip4/0.0.0.0/tcp/${4002+portsIncrement}`,
+							`/ip6/::/tcp/${4002+portsIncrement}`
 						]
 					}
 				}
@@ -68,7 +78,10 @@ export class Client implements ClientInterface {
 						for await (const chunk of this.ipfsNode.cat(data.cid)) {
 							messageContent += chunk
 						}
-						this.events.emit('message', JSON.parse(messageContent))
+						this.events.emit('message', {
+							cid: data.cid,
+							...JSON.parse(messageContent)
+						})
 						break;
 				}
 				

@@ -8,4 +8,5 @@ This is in experimental phase.
 
 #### TODO
 - [] Provive some kind of end-to-end encryption
+- [] Database regeneration between nodes (example fetching new messages while the user was offline)
 - [] Make some useful client as example
